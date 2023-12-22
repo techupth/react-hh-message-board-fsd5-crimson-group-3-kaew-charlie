@@ -1,4 +1,23 @@
+import { useState } from "react";
 function MessageBoard() {
+  const [messageInput, setMessageInput] = useState("");
+  const [messageList, setMessageList] = useState([]);
+
+  const handleAddMessageList = () => {
+    const newMessageList = [...messageList];
+    newMessageList.push(messageInput);
+    setMessageList(newMessageList);
+  };
+  const handleRemoveMessage = (messageIndex) => {
+    // ถ้าอยากจะลบ "hi" ออกจาก Array ต้องทำยังไงดี
+    // 6.1) Clone array
+    const updatedMessageList = [...messageList];
+    // 6.2) splice
+    updatedMessageList.splice(messageIndex, 1);
+
+    // 6.3) update state
+    setMessageList(updatedMessageList);
+  };
   return (
     <div className="app-wrapper">
       <h1 class="app-title">Message board</h1>
@@ -9,15 +28,36 @@ function MessageBoard() {
             name="message-text"
             type="text"
             placeholder="Enter message here"
+            onChange={(event) => {
+              setMessageInput(event.target.value);
+            }}
+            value={messageInput}
           />
         </label>
-        <button className="submit-message-button">Submit</button>
+        <button
+          className="submit-message-button"
+          onClick={handleAddMessageList}
+        >
+          Submit
+        </button>
       </div>
       <div class="board">
-        <div className="message">
-          <h1>Hello all ! This is first message.</h1>
-          <button className="delete-button">x</button>
-        </div>
+        {/* 3) เอา messageList มา render ด้วย Array.map */}
+        {messageList.map((message, index) => {
+          return (
+            <div key={index} className="message">
+              <h1>{message}</h1>
+              <button
+                className="delete-button"
+                onClick={() => {
+                  handleRemoveMessage(index);
+                }}
+              >
+                x
+              </button>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
